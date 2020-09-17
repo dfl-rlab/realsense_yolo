@@ -16,9 +16,10 @@ find_package(catkin REQUIRED COMPONENTS
   actionlib
   darknet_ros_msgs
   image_transport
-  spencer_tracking_msgs
+  #realsense_yolo
   message_generation
   pcl_ros
+  geometry_msgs
 )
 
 find_package(CUDA REQUIRED)
@@ -48,7 +49,7 @@ endif()
 
 ## Generate messages in the 'msg' folder
 add_message_files(
-   FILES debug_yolo.msg BoundingBoxes3d.msg BoundingBox3d.msg
+   FILES debug_yolo.msg BoundingBoxes3d.msg BoundingBox3d.msg DetectedPerson.msg DetectedPersons.msg
 )
 
 ## Generate services in the 'srv' folder
@@ -69,6 +70,7 @@ add_message_files(
 generate_messages(
    DEPENDENCIES
    std_msgs
+   geometry_msgs
 )
 
 ################################################
@@ -103,7 +105,7 @@ generate_messages(
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES realsense_yolo
-   CATKIN_DEPENDS roscpp rospy sensor_msgs std_msgs message_runtime
+   CATKIN_DEPENDS roscpp rospy sensor_msgs std_msgs message_runtime geometry_msgs
    LIBRARIES
     ${PROJECT_NAME}_lib
 #  DEPENDS system_lib

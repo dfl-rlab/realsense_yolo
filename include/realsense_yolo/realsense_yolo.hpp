@@ -33,8 +33,8 @@
 #include <opencv2/core/core.hpp>
 
 // Spencer
-#include <spencer_tracking_msgs/DetectedPersons.h>
-#include <spencer_tracking_msgs/DetectedPerson.h>
+#include <realsense_yolo/DetectedPersons.h>
+#include <realsense_yolo/DetectedPerson.h>
 
 // realsense_yolo_msgs
 #include <realsense_yolo/debug_yolo.h>
@@ -69,7 +69,7 @@ namespace realsense_yolo{
             tf::TransformListener tfListener_;
 
             // Parameter for nh.param()
-            std::string detection_output_pub, camera_link, marker_array_topic, depth_topic;
+            std::string detection_output_pub, camera_link, marker_array_topic, depth_topic,pointcloud2_topic;
             float probability_threshold;
             std::vector<std::string> obj_list;
 
@@ -96,7 +96,7 @@ namespace realsense_yolo{
             void filterOutUnwantedDetections(const darknet_ros_msgs::BoundingBoxes::ConstPtr& yolo_detection_raw_result, const sensor_msgs::Image::ConstPtr& depth_image,
                     const sensor_msgs::PointCloud2::ConstPtr& pointcloud_msg);
             void camera_infoCallback(const sensor_msgs::CameraInfo::ConstPtr& camera_info_msg);
-            spencer_tracking_msgs::DetectedPersons fillPeopleMessage(std::vector<bbox_t_3d> result_vec, std::string obj_names, std::string camera_frame_id,
+            realsense_yolo::DetectedPersons fillPeopleMessage(std::vector<bbox_t_3d> result_vec, std::string obj_names, std::string camera_frame_id,
                     const sensor_msgs::PointCloud2::ConstPtr& pointcloud_msg);
 
             void draw_boxes(const realsense_yolo::BoundingBoxes3d boxes);

@@ -29,11 +29,11 @@ namespace realsense_yolo{
 
 		// parameters name , variable_name, default value
 		nodeHandle_.param("depth_image_topic", depth_topic, std::string("/spencer/sensors/rgbd_front_top/depth/image_rect_raw"));
+		nodeHandle_.param("pointcloud2_topic", pointcloud2_topic, std::string("/spencer/sensors/rgbd_front_top/depth_registered/points"));
+		nodeHandle_.param("cameralink", camera_link, std::string("rgbd_front_top_depth_optical_frame"));
 
 		nodeHandle_.param("detection_output", detection_output_pub, std::string("/spencer/perception_internal/detected_persons/rgbd_front_top/upper_body"));
 		nodeHandle_.param("yolo_detection_threshold", probability_threshold,float(0.5));
-		
-		nodeHandle_.param("cameralink", camera_link, std::string("rgbd_front_top_depth_optical_frame"));
 
 		nodeHandle_.param("pose_variance", pose_variance_, 0.05);
      	nodeHandle_.param("detection_id_increment", detection_id_increment_, 1);
@@ -51,11 +51,11 @@ namespace realsense_yolo{
 		// Set queue size to 1 because generating a queue here will only pile up images and delay the output by the amount of queued images
 		m_yolo_detection_result_sub.subscribe(nodeHandle_,"/darknet_ros/bounding_boxes",1);
 		m_depth_img_sub.subscribe(nodeHandle_,depth_topic , 1);
-		m_pointcloud_sub.subscribe(nodeHandle_,"/spencer/sensors/rgbd_front_top/depth_registered/points",1);
+		m_pointcloud_sub.subscribe(nodeHandle_,pointcloud2_topic,1);
 		sync.reset(new Synchronizer(SyncPolicy(10),m_yolo_detection_result_sub,m_depth_img_sub,m_pointcloud_sub));
 		sync->registerCallback(boost::bind(&realsense_yolo_detector::filterOutUnwantedDetections, this,_1, _2,_3));
 
-		people_position_pub = nodeHandle_.advertise<spencer_tracking_msgs::DetectedPersons>(detection_output_pub, 1);
+		people_position_pub = nodeHandle_.advertise<realsense_yolo::DetectedPersons>(detection_output_pub, 1);
 		bbox3d_pub = nodeHandle_.advertise<visualization_msgs::MarkerArray>(marker_array_topic, 1);
 		debug_yolo_pub = nodeHandle_.advertise<realsense_yolo::debug_yolo>("debug_yolo_topic", 1);
 
@@ -356,13 +356,13 @@ namespace realsense_yolo{
 		bbox3d_pub.publish(msg);
 	}
 
-	spencer_tracking_msgs::DetectedPersons realsense_yolo_detector::fillPeopleMessage(
+	realsense_yolo::DetectedPersons realsense_yolo_detector::fillPeopleMessage(
 			std::vector<bbox_t_3d> result_vec, 
 			std::string obj_names, 
 			std::string camera_frame_id,
 			const sensor_msgs::PointCloud2::ConstPtr& pointcloud_msg){
 
-		spencer_tracking_msgs::DetectedPersons  detected_persons;
+		realsense_yolo::DetectedPersons  detected_persons;
 
 		data_lock.lock();
 
@@ -382,7 +382,7 @@ namespace realsense_yolo{
 			int x_center,y_center;
 			float Xreal,Yreal,Zreal;
 
-			spencer_tracking_msgs::DetectedPerson  detected_person;
+			realsense_yolo::DetectedPerson  detected_person;
 			
 			sensor_msgs::PointCloud out_cloud;
 			sensor_msgs::convertPointCloud2ToPointCloud(*pointcloud_msg, out_cloud);
@@ -412,8 +412,8 @@ namespace realsense_yolo{
 				nan_value = true;
 			}
 			
-			detected_person.modality = spencer_tracking_msgs::DetectedPerson::MODALITY_GENERIC_RGBD;
-			// detected_person.modality = spencer_tracking_msgs::DetectedPerson::MODALITY_GENERIC_YOLO;
+			detected_person.modality = realsense_yolo::DetectedPerson::MODALITY_GENERIC_RGBD;
+			// detected_person.modality = realsense_yolo::DetectedPerson::MODALITY_GENERIC_YOLO;
 			detected_person.confidence = i.m_bbox.probability;
 
 			// ??: pose_variance
