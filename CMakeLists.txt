@@ -144,9 +144,7 @@ if (CUDA_FOUND)
   cuda_add_executable(realsense_yolo src/realsense_yolo_node.cpp src/realsense_yolo.cpp)
   target_link_libraries(realsense_yolo ${catkin_LIBRARIES} ${OpenCV_LIBS})
 
-  cuda_add_executable(mobilessd_adaptor src/mobilessd_node.cpp src/realsense_yolo.cpp)
-  target_link_libraries(mobilessd_adaptor ${catkin_LIBRARIES} ${OpenCV_LIBS})
-
+  
 else()
   add_executable(realsense_yolo src/realsense_yolo_node.cpp src/realsense_yolo.cpp)
   target_link_libraries(realsense_yolo ${catkin_LIBRARIES} ${OpenCV_LIBS})

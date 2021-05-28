@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <launch>
-    <arg name="load_realsense_driver"   default="false"/>
-    <arg name="load_zed_driver"         default="true"/>
+    <arg name="load_realsense_driver"   default="true"/>
+    <arg name="load_zed_driver"         default="false"/>
 
-    <arg name="yolo"                    default="false"/>
+    <arg name="yolo"                    default="true"/>
     <arg name="visualization"           default="false"/>
     <arg name="play_from_bagfile"       default="false"/>
 
@@ -77,7 +77,7 @@
     </group>
 
     <!-- RViz visualization -->
-    <node name="tracking_visualization_rviz" pkg="rviz" type="rviz" args="-d /home/alex-beh/ros1_ws/learn_ws/src/realsense_yolo/launch/rviz/realsense_yolo.rviz" if="$(arg visualization)"/>
+    <!-- <node name="tracking_visualization_rviz" pkg="rviz" type="rviz" args="-d /home/alex-beh/ros1_ws/learn_ws/src/realsense_yolo/launch/rviz/realsense_yolo.rviz" if="$(arg visualization)"/> -->
 
 
 </launch>
